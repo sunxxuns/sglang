@@ -660,6 +660,7 @@ class DeepseekV2MoE(nn.Module):
             if name not in ["correction_bias"]
         ]
 
+    @torch._dynamo.disable
     def forward(
         self,
         hidden_states: torch.Tensor,
@@ -1471,6 +1472,7 @@ class DeepseekV2AttentionMLA(nn.Module):
             and forward_batch.attn_backend.data_type == torch.float8_e4m3fn
         )
 
+    @torch._dynamo.disable
     def forward_absorb_prepare(
         self,
         positions: torch.Tensor,

@@ -172,6 +172,7 @@ class QuarkW4A4MXFp4MoEMethod(QuarkMoEMethod):
     ):
         self.moe_runner_config = moe_runner_config
 
+    @torch._dynamo.disable
     def apply(
         self,
         layer: torch.nn.Module,
