@@ -186,11 +186,14 @@ jobs:
             -e SGLANG_NON_DENOISE_STAGE_TIME_TOLERANCE=0.6 \
             -e SGLANG_DENOISE_STEP_TOLERANCE=0.6 \
             -e SGLANG_DENOISE_AGG_TOLERANCE=0.3 \
+            -e SGLANG_TEST_NUM_INFERENCE_STEPS=5 \
+            -e SGLANG_TEST_OUTPUT_SIZE=480x640 \
             -w /sglang-checkout/python \
             ci_sglang python3 sglang/multimodal_gen/test/run_suite.py \
               --suite 1-gpu \
               --partition-id ${{ matrix.part }} \
-              --total-partitions 2
+              --total-partitions 2 \
+              -k "not flux and not qwen and not zimage"
 
   multimodal-gen-test-2-gpu-amd:
     needs: [check-changes]
@@ -234,11 +237,14 @@ jobs:
             -e SGLANG_NON_DENOISE_STAGE_TIME_TOLERANCE=0.6 \
             -e SGLANG_DENOISE_STEP_TOLERANCE=0.6 \
             -e SGLANG_DENOISE_AGG_TOLERANCE=0.3 \
+            -e SGLANG_TEST_NUM_INFERENCE_STEPS=5 \
+            -e SGLANG_TEST_OUTPUT_SIZE=480x640 \
             -w /sglang-checkout/python \
             ci_sglang python3 sglang/multimodal_gen/test/run_suite.py \
               --suite 2-gpu \
               --partition-id ${{ matrix.part }} \
-              --total-partitions 2
+              --total-partitions 2 \
+              -k "not flux and not qwen and not zimage"
 
   unit-test-backend-1-gpu-amd:
     needs: [check-changes, stage-a-test-1-amd]

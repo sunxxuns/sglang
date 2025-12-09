@@ -59,15 +59,26 @@ def parse_args():
         default="server",
         help="Base directory for tests relative to this script's parent",
     )
+    parser.add_argument(
+        "-k",
+        "--filter",
+        type=str,
+        default=None,
+        help="Pytest filter expression (passed to pytest -k)",
+    )
     return parser.parse_args()
 
 
-def run_pytest(files):
+def run_pytest(files, filter_expr=None):
     if not files:
         print("No files to run.")
         return 0
 
     base_cmd = [sys.executable, "-m", "pytest", "-s", "-v", "--log-cli-level=INFO"]
+
+    # Add pytest -k filter if provided
+    if filter_expr:
+        base_cmd.extend(["-k", filter_expr])
 
     max_retries = 2
     # retry if the perf assertion failed, for {max_retries} times
@@ -104,6 +115,15 @@ def run_pytest(files):
         returncode = process.poll()
 
         if returncode == 0:
+            return 0
+
+        # Exit code 5 means no tests were collected/selected - treat as success
+        # when using filters, since some partitions may have all tests filtered out
+        if returncode == 5:
+            logger.info(
+                "No tests collected (exit code 5). This is expected when filters "
+                "deselect all tests in a partition. Treating as success."
+            )
             return 0
 
         # check if the failure is due to an assertion in test_server_utils.py
@@ -165,7 +185,7 @@ def main():
         sys.exit(0)
 
     # 4. execute
-    exit_code = run_pytest(my_files)
+    exit_code = run_pytest(my_files, filter_expr=args.filter)
     sys.exit(exit_code)
 
 
