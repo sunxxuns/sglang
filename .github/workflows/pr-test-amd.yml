@@ -193,7 +193,7 @@ jobs:
               --suite 1-gpu \
               --partition-id ${{ matrix.part }} \
               --total-partitions 2 \
-              -k "not flux and not qwen and not zimage"
+              -k "not qwen and not zimage"
 
   multimodal-gen-test-2-gpu-amd:
     needs: [check-changes]
@@ -244,7 +244,7 @@ jobs:
               --suite 2-gpu \
               --partition-id ${{ matrix.part }} \
               --total-partitions 2 \
-              -k "not flux and not qwen and not zimage"
+              -k "not qwen and not zimage"
 
   unit-test-backend-1-gpu-amd:
     needs: [check-changes, stage-a-test-1-amd]
